@@ -40,64 +40,70 @@ class _RappiConceptState extends State<_RappiConcept>
     return Scaffold(
       backgroundColor: _backgroundColor,
       body: SafeArea(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Container(
-              color: Colors.white,
-              height: 90,
-              child: Padding(
-                padding: const EdgeInsets.all(30.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Text(
-                      'Homepage',
-                      style: TextStyle(
-                          color: _blueColor,
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold),
-                    ),
-                    CircleAvatar(
-                      backgroundColor: _greenColor,
-                      radius: 17,
-                      child: ClipOval(
-                        child: Image.asset(
-                          'assets/placeholder.png',
-                          height: 30,
-                          fit: BoxFit.cover,
+        child: AnimatedBuilder(
+          animation: _bloc,
+          builder: (_,__) {
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Container(
+                  color: Colors.white,
+                  height: 90,
+                  child: Padding(
+                    padding: const EdgeInsets.all(30.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text(
+                          'Homepage',
+                          style: TextStyle(
+                              color: _blueColor,
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold),
                         ),
-                      ),
-                    )
-                  ],
+                        CircleAvatar(
+                          backgroundColor: _greenColor,
+                          radius: 17,
+                          child: ClipOval(
+                            child: Image.asset(
+                              'assets/placeholder.png',
+                              height: 30,
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
                 ),
-              ),
-            ),
-            Container(
-              height: 60,
-              child: TabBar(
-                controller: _bloc.tabController,
-                isScrollable: true,
-                indicatorWeight: 0.1,
-                tabs: _bloc.tabs.map((e) => _RappiTabWidget(tabCategory:  e)).toList(),
-              ),
-            ),
-            Expanded(
-              child: Container(
-                color: Colors.blue,
-                child: ListView.builder(
-                  itemCount: 20,
-                  itemBuilder: (context, index) {
-                    if (index.isOdd) {
-                      return _RappiCategoryItem();
-                    } else {
-                      return _RappiProductItem();
-                    }
-                  },
+                Container(
+                  height: 60,
+                  child: TabBar(
+                    onTap: _bloc.onCategorySelected,
+                    controller: _bloc.tabController,
+                    isScrollable: true,
+                    indicatorWeight: 0.1,
+                    tabs: _bloc.tabs.map((e) => _RappiTabWidget(tabCategory:  e)).toList(),
+                  ),
                 ),
-              ),
-            ),
-          ],
+                Expanded(
+                  child: Container(
+                    color: Colors.blue,
+                    child: ListView.builder(
+                      itemCount: 20,
+                      itemBuilder: (context, index) {
+                        if (index.isOdd) {
+                          return _RappiCategoryItem();
+                        } else {
+                          return _RappiProductItem();
+                        }
+                      },
+                    ),
+                  ),
+                ),
+              ],
+            );
+          }
         ),
       ),
     );

@@ -6,12 +6,21 @@ class RappiBLoc with ChangeNotifier {
   TabController tabController;
 
   void init(TickerProvider ticker) {
-    tabController = TabController(length: rappiCategorties.length, vsync: ticker);
+    tabController =
+        TabController(length: rappiCategorties.length, vsync: ticker);
 
     for (int i = 0; i < rappiCategorties.length; i++) {
       final category = rappiCategorties[i];
       tabs.add(RappiTabCategory(category: category, selected: (i == 0)));
     }
+  }
+
+  void onCategorySelected(int index) {
+    final selected = tabs[index];
+    for (int i = 0; i < tabs.length; i++) {
+      tabs[i] = tabs[i].copyWith(selected.category.name == tabs[i].category.name);
+    }
+    notifyListeners();
   }
 }
 
@@ -20,7 +29,10 @@ class RappiTabCategory {
     @required this.category,
     @required this.selected,
   });
-
+  RappiTabCategory copyWith(bool selected) => RappiTabCategory(
+        category: category,
+        selected: selected,
+      );
   final RappiCategory category;
   final bool selected;
 }
