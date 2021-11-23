@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_tabbar_listview/rappi_bloc.dart';
+import 'package:flutter_tabbar_listview/rappi_data.dart';
 
 const _backgroundColor = Color(0xfff6f9fa);
 const _blueColor = Color(0xff0d1863);
 const _greenColor = Color(0xff2bbeba);
-const categoryHeight = 55.0;
-const productHeight = 100.0;
+
 
 class MainRappiConceptApp extends StatelessWidget {
   const MainRappiConceptApp({Key key}) : super(key: key);
@@ -41,70 +41,72 @@ class _RappiConceptState extends State<_RappiConcept>
       backgroundColor: _backgroundColor,
       body: SafeArea(
         child: AnimatedBuilder(
-          animation: _bloc,
-          builder: (_,__) {
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Container(
-                  color: Colors.white,
-                  height: 90,
-                  child: Padding(
-                    padding: const EdgeInsets.all(30.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        const Text(
-                          'Homepage',
-                          style: TextStyle(
-                              color: _blueColor,
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold),
-                        ),
-                        CircleAvatar(
-                          backgroundColor: _greenColor,
-                          radius: 17,
-                          child: ClipOval(
-                            child: Image.asset(
-                              'assets/placeholder.png',
-                              height: 30,
-                              fit: BoxFit.cover,
-                            ),
+            animation: _bloc,
+            builder: (_, __) {
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Container(
+                    color: Colors.white,
+                    height: 90,
+                    child: Padding(
+                      padding: const EdgeInsets.all(30.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          const Text(
+                            'Homepage',
+                            style: TextStyle(
+                                color: _blueColor,
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold),
                           ),
-                        )
-                      ],
+                          CircleAvatar(
+                            backgroundColor: _greenColor,
+                            radius: 17,
+                            child: ClipOval(
+                              child: Image.asset(
+                                'assets/placeholder.png',
+                                height: 30,
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
                     ),
                   ),
-                ),
-                Container(
-                  height: 60,
-                  child: TabBar(
-                    onTap: _bloc.onCategorySelected,
-                    controller: _bloc.tabController,
-                    isScrollable: true,
-                    indicatorWeight: 0.1,
-                    tabs: _bloc.tabs.map((e) => _RappiTabWidget(tabCategory:  e)).toList(),
-                  ),
-                ),
-                Expanded(
-                  child: Container(
-                    color: Colors.blue,
-                    child: ListView.builder(
-                      itemCount: 20,
-                      itemBuilder: (context, index) {
-                        if (index.isOdd) {
-                          return _RappiCategoryItem();
-                        } else {
-                          return _RappiProductItem();
-                        }
-                      },
+                  Container(
+                    height: 60,
+                    child: TabBar(
+                      onTap: _bloc.onCategorySelected,
+                      controller: _bloc.tabController,
+                      isScrollable: true,
+                      indicatorWeight: 0.1,
+                      tabs: _bloc.tabs
+                          .map((e) => _RappiTabWidget(tabCategory: e))
+                          .toList(),
                     ),
                   ),
-                ),
-              ],
-            );
-          }
-        ),
+                  Expanded(
+                    child: Container(
+                      color: Colors.blue,
+                      child: ListView.builder(
+                        itemCount: _bloc.items.length,
+                        itemBuilder: (context, index) {
+                          final item = _bloc.items[index];
+                          if (item.isCategory) {
+                            return _RappiCategoryItem(category: item.category);
+                          } else {
+                            return _RappiProductItem(product: item.product);
+                          }
+                        },
+                      ),
+                    ),
+                  ),
+                ],
+              );
+            }),
       ),
     );
   }
@@ -118,11 +120,11 @@ class _RappiTabWidget extends StatelessWidget {
   final RappiTabCategory tabCategory;
   @override
   Widget build(BuildContext context) {
-    final selected=tabCategory.selected;
-    return  Opacity(
-      opacity: selected?1:0.5,
+    final selected = tabCategory.selected;
+    return Opacity(
+      opacity: selected ? 1 : 0.5,
       child: Card(
-        elevation:selected? 6:0,
+        elevation: selected ? 6 : 0,
         child: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Text(
@@ -140,8 +142,11 @@ class _RappiTabWidget extends StatelessWidget {
 }
 
 class _RappiCategoryItem extends StatelessWidget {
-  const _RappiCategoryItem({Key key}) : super(key: key);
-
+  const _RappiCategoryItem({
+    Key key,
+    @required this.category,
+  }) : super(key: key);
+  final RappiCategory category;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -149,9 +154,9 @@ class _RappiCategoryItem extends StatelessWidget {
       height: categoryHeight,
       padding: const EdgeInsets.symmetric(horizontal: 20),
       alignment: Alignment.centerLeft,
-      child: const Text(
-        'Category',
-        style: TextStyle(
+      child:  Text(
+        category.name,
+        style: const TextStyle(
           color: _blueColor,
           fontSize: 16,
           fontWeight: FontWeight.bold,
@@ -162,13 +167,16 @@ class _RappiCategoryItem extends StatelessWidget {
 }
 
 class _RappiProductItem extends StatelessWidget {
-  const _RappiProductItem({Key key}) : super(key: key);
-
+  const _RappiProductItem({
+    Key key,
+    @required this.product,
+  }) : super(key: key);
+  final RappiProduct product;
   @override
   Widget build(BuildContext context) {
     return Container(
       height: productHeight,
-      child: Text('product'),
+      child: Text(product.name),
     );
   }
 }
