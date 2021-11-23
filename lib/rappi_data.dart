@@ -67,11 +67,41 @@ const rappiCategorties = [
         price: 55.55,
         image: 'assets/placeholder.png',
       ),
+      RappiProduct(
+        name: 'prod3',
+        description: 'this is prod',
+        price: 55.55,
+        image: 'assets/placeholder.png',
+      ),
+      RappiProduct(
+        name: 'prod3',
+        description: 'this is prod',
+        price: 55.55,
+        image: 'assets/placeholder.png',
+      ),
     ],
   ),
   RappiCategory(
     name: 'cat4',
     products: [
+      RappiProduct(
+        name: 'prod4',
+        description: 'this is prod',
+        price: 55.55,
+        image: 'assets/placeholder.png',
+      ),
+      RappiProduct(
+        name: 'prod4',
+        description: 'this is prod',
+        price: 55.55,
+        image: 'assets/placeholder.png',
+      ),
+      RappiProduct(
+        name: 'prod4',
+        description: 'this is prod',
+        price: 55.55,
+        image: 'assets/placeholder.png',
+      ),
       RappiProduct(
         name: 'prod4',
         description: 'this is prod',
@@ -89,11 +119,35 @@ const rappiCategorties = [
         price: 55.55,
         image: 'assets/placeholder.png',
       ),
+      RappiProduct(
+        name: 'prod5',
+        description: 'this is prod',
+        price: 55.55,
+        image: 'assets/placeholder.png',
+      ),
+      RappiProduct(
+        name: 'prod5',
+        description: 'this is prod',
+        price: 55.55,
+        image: 'assets/placeholder.png',
+      ),
     ],
   ),
   RappiCategory(
     name: 'cat6',
     products: [
+      RappiProduct(
+        name: 'prod6',
+        description: 'this is prod',
+        price: 55.55,
+        image: 'assets/placeholder.png',
+      ),
+      RappiProduct(
+        name: 'prod6',
+        description: 'this is prod',
+        price: 55.55,
+        image: 'assets/placeholder.png',
+      ),
       RappiProduct(
         name: 'prod6',
         description: 'this is prod',
@@ -111,11 +165,23 @@ const rappiCategorties = [
         price: 55.55,
         image: 'assets/placeholder.png',
       ),
+      RappiProduct(
+        name: 'prod7',
+        description: 'this is prod',
+        price: 55.55,
+        image: 'assets/placeholder.png',
+      ),
     ],
   ),
   RappiCategory(
     name: 'cat8',
     products: [
+      RappiProduct(
+        name: 'prod8',
+        description: 'this is prod',
+        price: 55.55,
+        image: 'assets/placeholder.png',
+      ),
       RappiProduct(
         name: 'prod8',
         description: 'this is prod',
@@ -138,6 +204,18 @@ const rappiCategorties = [
   RappiCategory(
     name: 'cat10',
     products: [
+      RappiProduct(
+        name: 'prod10',
+        description: 'this is prod',
+        price: 55.55,
+        image: 'assets/placeholder.png',
+      ),
+      RappiProduct(
+        name: 'prod10',
+        description: 'this is prod',
+        price: 55.55,
+        image: 'assets/placeholder.png',
+      ),
       RappiProduct(
         name: 'prod10',
         description: 'this is prod',

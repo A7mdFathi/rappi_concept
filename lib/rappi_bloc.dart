@@ -9,21 +9,31 @@ class RappiBLoc with ChangeNotifier {
   List<RappiItem> items = [];
   TabController tabController;
   ScrollController scrollController = ScrollController();
+  bool _listen = true;
+
   void init(TickerProvider ticker) {
     tabController =
         TabController(length: rappiCategorties.length, vsync: ticker);
     double offsetFrom = 0.0;
+    double offsetTo = 0.0;
     for (int i = 0; i < rappiCategorties.length; i++) {
       final category = rappiCategorties[i];
 
       if (i > 0) {
         offsetFrom += rappiCategorties[i - 1].products.length * productHeight;
       }
+      if (i < rappiCategorties.length - 1) {
+        offsetTo = offsetFrom +
+            rappiCategorties[i + 1].products.length * productHeight;
+      } else {
+        offsetTo = double.infinity;
+      }
 
       tabs.add(RappiTabCategory(
         category: category,
         selected: (i == 0),
         offsetFrom: categoryHeight * i + offsetFrom,
+        offsetTo: offsetTo,
       ));
 
       items.add(RappiItem(category: category));
@@ -32,25 +42,46 @@ class RappiBLoc with ChangeNotifier {
         items.add(RappiItem(product: product));
       }
     }
+    scrollController.addListener(_onScrollListener);
   }
 
-  void onCategorySelected(int index) {
+  void _onScrollListener() {
+    if (_listen) {
+      for (int i = 0; i < tabs.length; i++) {
+        final tab = tabs[i];
+        if (scrollController.offset >= tab.offsetFrom &&
+            scrollController.offset <= tab.offsetTo &&
+            !tab.selected) {
+          onCategorySelected(i, animationRequired: false);
+          tabController.animateTo(i);
+          break;
+        }
+      }
+    }
+  }
+
+  void onCategorySelected(int index, {bool animationRequired = true}) async {
     final selected = tabs[index];
     for (int i = 0; i < tabs.length; i++) {
-      tabs[i] =
-          tabs[i].copyWith(selected.category.name == tabs[i].category.name);
+      final condition = selected.category.name == tabs[i].category.name;
+      tabs[i] = tabs[i].copyWith(condition);
     }
     notifyListeners();
 
-    scrollController.animateTo(
-      selected.offsetFrom,
-      duration: const Duration(milliseconds: 500),
-      curve: Curves.bounceOut,
-    );
+    if (animationRequired) {
+      _listen = false;
+      await scrollController.animateTo(
+        selected.offsetFrom,
+        duration: const Duration(milliseconds: 500),
+        curve: Curves.linear,
+      );
+      _listen = true;
+    }
   }
 
   @override
   void dispose() {
+    scrollController.removeListener(_onScrollListener);
     scrollController.dispose();
     tabController.dispose();
     super.dispose();
@@ -62,16 +93,19 @@ class RappiTabCategory {
     @required this.category,
     @required this.selected,
     @required this.offsetFrom,
+    @required this.offsetTo,
   });
 
   RappiTabCategory copyWith(bool selected) => RappiTabCategory(
         category: category,
         selected: selected,
         offsetFrom: offsetFrom,
+        offsetTo: offsetTo,
       );
   final RappiCategory category;
   final bool selected;
   final double offsetFrom;
+  final double offsetTo;
 }
 
 class RappiItem {
