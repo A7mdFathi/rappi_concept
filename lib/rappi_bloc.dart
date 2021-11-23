@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_tabbar_listview/rappi_data.dart';
 
 const categoryHeight = 55.0;
-const productHeight = 100.0;
+const productHeight = 110.0;
 
 class RappiBLoc with ChangeNotifier {
   List<RappiTabCategory> tabs = [];
   List<RappiItem> items = [];
   TabController tabController;
-
+  ScrollController scrollController = ScrollController();
   void init(TickerProvider ticker) {
     tabController =
         TabController(length: rappiCategorties.length, vsync: ticker);
@@ -32,6 +32,13 @@ class RappiBLoc with ChangeNotifier {
           tabs[i].copyWith(selected.category.name == tabs[i].category.name);
     }
     notifyListeners();
+  }
+
+  @override
+  void dispose() {
+    scrollController.dispose();
+    tabController.dispose();
+    super.dispose();
   }
 }
 

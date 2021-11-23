@@ -6,7 +6,6 @@ const _backgroundColor = Color(0xfff6f9fa);
 const _blueColor = Color(0xff0d1863);
 const _greenColor = Color(0xff2bbeba);
 
-
 class MainRappiConceptApp extends StatelessWidget {
   const MainRappiConceptApp({Key key}) : super(key: key);
 
@@ -35,6 +34,13 @@ class _RappiConceptState extends State<_RappiConcept>
     super.initState();
   }
 
+
+  @override
+  void dispose() {
+    _bloc.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -47,12 +53,17 @@ class _RappiConceptState extends State<_RappiConcept>
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   Container(
-                    color: Colors.white,
-                    height: 90,
+
+                    height: 80,
+                    alignment: Alignment.bottomLeft,
                     child: Padding(
-                      padding: const EdgeInsets.all(30.0),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 30.0,
+                        vertical: 15.0,
+                      ),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
                           const Text(
                             'Homepage',
@@ -89,19 +100,17 @@ class _RappiConceptState extends State<_RappiConcept>
                     ),
                   ),
                   Expanded(
-                    child: Container(
-                      color: Colors.blue,
-                      child: ListView.builder(
-                        itemCount: _bloc.items.length,
-                        itemBuilder: (context, index) {
-                          final item = _bloc.items[index];
-                          if (item.isCategory) {
-                            return _RappiCategoryItem(category: item.category);
-                          } else {
-                            return _RappiProductItem(product: item.product);
-                          }
-                        },
-                      ),
+                    child: ListView.builder(
+                      controller: _bloc.scrollController,
+                      itemCount: _bloc.items.length,
+                      itemBuilder: (context, index) {
+                        final item = _bloc.items[index];
+                        if (item.isCategory) {
+                          return _RappiCategoryItem(category: item.category);
+                        } else {
+                          return _RappiProductItem(product: item.product);
+                        }
+                      },
                     ),
                   ),
                 ],
@@ -154,12 +163,14 @@ class _RappiCategoryItem extends StatelessWidget {
       height: categoryHeight,
       padding: const EdgeInsets.symmetric(horizontal: 20),
       alignment: Alignment.centerLeft,
-      child:  Text(
-        category.name,
-        style: const TextStyle(
-          color: _blueColor,
-          fontSize: 16,
-          fontWeight: FontWeight.bold,
+      child: Card(
+        child: Text(
+          category.name,
+          style: const TextStyle(
+            color: _blueColor,
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+          ),
         ),
       ),
     );
@@ -176,7 +187,59 @@ class _RappiProductItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       height: productHeight,
-      child: Text(product.name),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 5),
+        child: Card(
+          elevation: 6,
+          shadowColor: Colors.black54,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Row(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: Image.asset(product.image),
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      product.name,
+                      style: const TextStyle(
+                        color: _blueColor,
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 5),
+                    Text(
+                      product.description,
+                      maxLines: 2,
+                      style: const TextStyle(
+                        color: _blueColor,
+                        fontSize: 10,
+                      ),
+                    ),
+                    const SizedBox(height: 5),
+                    Text(
+                      '\$${product.price.toStringAsFixed(2)}',
+                      style: const TextStyle(
+                        color: _greenColor,
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }
