@@ -12,10 +12,19 @@ class RappiBLoc with ChangeNotifier {
   void init(TickerProvider ticker) {
     tabController =
         TabController(length: rappiCategorties.length, vsync: ticker);
-
+    double offsetFrom = 0.0;
     for (int i = 0; i < rappiCategorties.length; i++) {
       final category = rappiCategorties[i];
-      tabs.add(RappiTabCategory(category: category, selected: (i == 0)));
+
+      if (i > 0) {
+        offsetFrom += rappiCategorties[i - 1].products.length * productHeight;
+      }
+
+      tabs.add(RappiTabCategory(
+        category: category,
+        selected: (i == 0),
+        offsetFrom: categoryHeight * i + offsetFrom,
+      ));
 
       items.add(RappiItem(category: category));
       for (int j = 0; j < category.products.length; j++) {
@@ -32,6 +41,12 @@ class RappiBLoc with ChangeNotifier {
           tabs[i].copyWith(selected.category.name == tabs[i].category.name);
     }
     notifyListeners();
+
+    scrollController.animateTo(
+      selected.offsetFrom,
+      duration: const Duration(milliseconds: 500),
+      curve: Curves.bounceOut,
+    );
   }
 
   @override
@@ -46,13 +61,17 @@ class RappiTabCategory {
   const RappiTabCategory({
     @required this.category,
     @required this.selected,
+    @required this.offsetFrom,
   });
+
   RappiTabCategory copyWith(bool selected) => RappiTabCategory(
         category: category,
         selected: selected,
+        offsetFrom: offsetFrom,
       );
   final RappiCategory category;
   final bool selected;
+  final double offsetFrom;
 }
 
 class RappiItem {
